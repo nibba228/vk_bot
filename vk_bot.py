@@ -7,6 +7,7 @@ from vk_news import get_news
 from vk_keyboard import enable_keyboard
 from vk_memes import get_meme
 from vk_weather import get_weather
+from vk_ex_rates import get_exchange_rate
 
 
 if __name__ == '__main__':
@@ -26,6 +27,8 @@ if __name__ == '__main__':
     /weather <город> - погода на сегодня.
      Название города пишется по-английски, с дефисами вместо пробелов, без учета регистра. 
      По умолчанию Москва
+     
+     /ex-rate - получить курсы основных валют
     '''
 
     for event in longpoll.listen():
@@ -52,6 +55,11 @@ if __name__ == '__main__':
                 vk.messages.send(user_id=user_id,
                                  random_id=random_id,
                                  message=get_weather(msg[8:].strip()),
+                                 keyboard=enable_keyboard())
+            if msg == '/ex-rate':
+                vk.messages.send(user_id=user_id,
+                                 random_id=random_id,
+                                 message=get_exchange_rate(),
                                  keyboard=enable_keyboard())
             else:
                 vk.messages.send(user_id=user_id,
