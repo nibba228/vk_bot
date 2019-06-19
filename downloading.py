@@ -47,6 +47,8 @@ def download_audio(vk, dialog_id):  # пока только с одной пес
     messages = ['''Вот твоя ссылка на скачивание "{} - {}": {}.
                 Если название песни при загрузке отличается, то,
                 поверь, содержимое - нет.'''.format(artists[i], titles[i], short_links[i])
-                for i in range(len(titles))]
+                for i in range(len(titles))]  # помимо titles может быть short_links, 
+    #                                           artists - все, что содержит
+    #                                           len(attachments_indices) элементов
 
     return '\n\n'.join(messages)
