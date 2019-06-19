@@ -18,7 +18,7 @@ from downloading import download_audio
 
 
 if __name__ == '__main__':
-    TOKEN = 'b1d0871366298b0af1290675423f38c05d57c63296eb409ce866b646fbbdda6ce506c14d2ad959baa312c'
+    TOKEN = '<Token>'
     vk_session = vk_api.VkApi(token=TOKEN)
     vk = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
