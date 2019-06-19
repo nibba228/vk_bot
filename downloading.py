@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 
 def download_audio(vk, dialog_id):  # пока только с одной песней
     try:
-        audios = vk.messages.getHistory(peer_id=dialog_id,
-                                        count=1)
+        audios = vk.messages.getHistory(peer_id=dialog_id, count=1)
+        
         attachments_count = 0
         for counter in audios['items'][0]['attachments']:
             if counter['type'] == 'audio':
