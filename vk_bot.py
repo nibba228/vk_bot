@@ -1,22 +1,30 @@
 import vk_api
+
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
-import random
 
-from vk_news import get_news
-from vk_keyboard import enable_keyboard
-from vk_memes import get_meme
-from vk_weather import get_weather
-from vk_ex_rates import get_exchange_rate
+from news import get_news
+from keyboard import enable_keyboard
+from memes import get_meme
+from weather import get_weather
+from exchange_rates import get_exchange_rate, get_char_codes
+from downloading import download_audio
+
+# TODO: попробовать узнать погоду с помощью кнопки геолокации
+# TODO: попробовать сделать голосовуху робота с указанным сообщением с помощью gtts
+# TODO: загружать видео, фильмы или что-то вроде того
+# TODO: реализовать множественное скачивание музыки,
+#  если одновременно с командой скинуто более 1 аудиозаписи
+
 
 
 if __name__ == '__main__':
-    TOKEN = 'b1d087...312c'
+    TOKEN = 'b1d0871366298b0af1290675423f38c05d57c63296eb409ce866b646fbbdda6ce506c14d2ad959baa312c'
     vk_session = vk_api.VkApi(token=TOKEN)
     vk = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
 
-    greeting = '''
+    summary = '''
 Вот что я умею:
     /help - сводка по командам
     
@@ -26,9 +34,16 @@ if __name__ == '__main__':
     
     /weather <город> - погода на сегодня.
      Название города пишется по-английски, с дефисами вместо пробелов, без учета регистра. 
-     По умолчанию Москва
+     По умолчанию Москва.
+     Например, получить информацию о погоде в Лос Анджелесе: /weather los-angeles
      
      /ex-rate - получить курсы основных валют
+     /ex-rate <XXX> - получить информацию по 1 валюте при помощи её чаркода, чем XXX и является.
+     Например, получить информацию о Евро: /ex-rate EUR
+                            ↓↓↓
+     /chars - получить чаркоды валют
+     
+     /aud - скачать прикреленные к команде аудиозаписи, это может занять некоторое время.
     '''
 
     for event in longpoll.listen():
@@ -36,36 +51,29 @@ if __name__ == '__main__':
             random_id = get_random_id()
             user_id = event.user_id
             msg = event.text.lower()
-            if msg == '/help':
-                vk.messages.send(user_id=user_id,
-                                 random_id=random_id,
-                                 message=greeting,
-                                 keyboard=enable_keyboard())
+
+            kwargs = {'user_id': user_id,
+                      'random_id': random_id}
+
+            if msg in ('/help', 'начать'):
+                vk.messages.send(message=summary, keyboard=enable_keyboard(),
+                                 **kwargs)
             if msg == '/news':
-                vk.messages.send(user_id=user_id,
-                                 random_id=random_id,
-                                 message=get_news(),
-                                 keyboard=enable_keyboard())
+                vk.messages.send(message=get_news(), **kwargs)
             if msg == '/meme':
-                vk.messages.send(user_id=user_id,
-                                 random_id=random_id,
-                                 attachment=get_meme(random.choice(['-171240129', '-72495085'])),
-                                 keyboard=enable_keyboard())
+                vk.messages.send(attachment=get_meme('-165800926'),
+                                 **kwargs)
             if '/weather' in msg:
-                vk.messages.send(user_id=user_id,
-                                 random_id=random_id,
-                                 message=get_weather(msg[8:].strip()),
-                                 keyboard=enable_keyboard())
-            if msg == '/ex-rate':
-                vk.messages.send(user_id=user_id,
-                                 random_id=random_id,
-                                 message=get_exchange_rate(),
-                                 keyboard=enable_keyboard())
+                vk.messages.send(message=get_weather(msg[8:].strip()), **kwargs)
+            if '/ex-rate' in msg:
+                vk.messages.send(message=get_exchange_rate(msg[9:].strip().upper()),
+                                 **kwargs)
+            if msg == '/chars':
+                vk.messages.send(message=get_char_codes(), **kwargs)
+            if msg == '/aud':
+                vk.messages.send(message=download_audio(vk, user_id),
+                                 **kwargs)
             else:
-                vk.messages.send(user_id=user_id,
-                                 random_id=random_id,
-                                 message='''
-                                 Я не понимаю то, что вы написали.
-                                 Отправьте /help, чтобы увидеть сводку по командам
-                                         ''',
-                                 keyboard=enable_keyboard())
+                vk.messages.send(message='''Я не понимаю то, что вы написали.
+                                 Отправьте /help, чтобы увидеть сводку по командам''',
+                                 **kwargs)
