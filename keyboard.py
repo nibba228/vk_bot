@@ -13,13 +13,13 @@ def enable_keyboard():
     # if geo_button:
     #     keyboard...
 
-    keyboard.add_button('/meme', VkKeyboardColor.PRIMARY)
-    keyboard.add_button('/news', VkKeyboardColor.PRIMARY)
+    keyboard.add_button('/m', VkKeyboardColor.PRIMARY)
+    keyboard.add_button('/n', VkKeyboardColor.PRIMARY)
     keyboard.add_line()
 
-    keyboard.add_button('/weather', VkKeyboardColor.PRIMARY)
-    keyboard.add_button('/ex-rate', VkKeyboardColor.PRIMARY)
-    keyboard.add_button('/chars', VkKeyboardColor.PRIMARY)
-    keyboard.add_button('/aud', VkKeyboardColor.PRIMARY)
+    keyboard.add_button('/w', VkKeyboardColor.PRIMARY)
+    keyboard.add_button('/exr', VkKeyboardColor.PRIMARY)
+    keyboard.add_button('/c', VkKeyboardColor.PRIMARY)
+    keyboard.add_button('/a', VkKeyboardColor.PRIMARY)
 
     return keyboard.get_keyboard()

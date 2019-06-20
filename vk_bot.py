@@ -12,14 +12,12 @@ from downloading import download_audio
 
 # TODO: попробовать узнать погоду с помощью кнопки геолокации
 # TODO: попробовать сделать голосовуху робота с указанным сообщением с помощью gtts
-# TODO: загружать видео, фильмы или что-то вроде того
-# TODO: реализовать множественное скачивание музыки,
-#  если одновременно с командой скинуто более 1 аудиозаписи
+# TODO: добавить возможность пересылать сообщения
 
 
-if __name__ == '__main__':
-    TOKEN = '<Token>'
-    vk_session = vk_api.VkApi(token=TOKEN)
+def main():
+    token = 'b1d0871366298b0af1290675423f38c05d57c63296eb409ce866b646fbbdda6ce506c14d2ad959baa312c'
+    vk_session = vk_api.VkApi(token=token)
     vk = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
 
@@ -27,22 +25,22 @@ if __name__ == '__main__':
 Вот что я умею:
     /help - сводка по командам
     
-    /news - новости
+    /n - новости
     
-    /meme - мем
+    /m - мем
     
-    /weather <город> - погода на сегодня.
-     Название города пишется по-английски, с дефисами вместо пробелов, без учета регистра. 
-     По умолчанию Москва.
-     Например, получить информацию о погоде в Лос Анджелесе: /weather los-angeles
+    /w - получить сведения о погоде в Москве
+    
+    /w <город> - погода на сегодня. Это может занять некоторое время.
      
-     /ex-rate - получить курсы основных валют
-     /ex-rate <XXX> - получить информацию по 1 валюте при помощи её чаркода, чем XXX и является.
-     Например, получить информацию о Евро: /ex-rate EUR
+    /exr - получить курсы основных валют
+     
+    /exr <XXX> - получить информацию по 1 валюте при помощи её чаркода, чем XXX и является.
+    Например, получить информацию о Евро: /ex-rate EUR
                             ↓↓↓
-     /chars - получить чаркоды валют
+    /c - получить чаркоды валют
      
-     /aud - скачать прикреленные к команде аудиозаписи, это может занять некоторое время.
+    /a - скачать прикреленные к команде аудиозаписи, это может занять некоторое время.
     '''
 
     for event in longpoll.listen():
@@ -57,22 +55,31 @@ if __name__ == '__main__':
             if msg in ('/help', 'начать'):
                 vk.messages.send(message=summary, keyboard=enable_keyboard(),
                                  **kwargs)
-            if msg == '/news':
+
+            elif msg == '/news':
                 vk.messages.send(message=get_news(), **kwargs)
-            if msg == '/meme':
-                vk.messages.send(attachment=get_meme('-165800926'),
+
+            elif msg == '/meme':
+                vk.messages.send(attachment=get_meme('-157645793'),
                                  **kwargs)
-            if '/weather' in msg:
+
+            elif '/weather' in msg:
                 vk.messages.send(message=get_weather(msg[8:].strip()), **kwargs)
-            if '/ex-rate' in msg:
+
+            elif '/ex-rate' in msg:
                 vk.messages.send(message=get_exchange_rate(msg[9:].strip().upper()),
                                  **kwargs)
-            if msg == '/chars':
+
+            elif msg == '/chars':
                 vk.messages.send(message=get_char_codes(), **kwargs)
-            if msg == '/aud':
+
+            elif msg == '/aud':
                 vk.messages.send(message=download_audio(vk, user_id),
                                  **kwargs)
             else:
                 vk.messages.send(message='''Я не понимаю то, что вы написали.
                                  Отправьте /help, чтобы увидеть сводку по командам''',
                                  **kwargs)
+
+
+main()

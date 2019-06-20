@@ -1,25 +1,37 @@
 import requests
 from bs4 import BeautifulSoup
+from yandex.Translater import Translater
 
 
 def get_weather(city):
-    city = 'moscow' if city == '' else city
+    token = 'trnsl.1.1.20190620T162425Z.570120d7187b4d5b.1a146fe2be7e8b171d1cca71f41ff5ba169c8ac3'
 
-    url = 'https://yandex.ru/pogoda/' + city
+    if city != '':
+        translator = Translater(token, city, 'ru', 'en')
+        translated = translator.translate().lower().replace(' ', '-')
+    else:
+        translated = 'moscow'
+
+    url = 'https://yandex.ru/pogoda/' + translated
     response = requests.get(url)
     markup = BeautifulSoup(response.content, 'html.parser')
+
     try:
-        weather_in_city = markup.find_all('div', {'class': 'main-title__title-wrap'})[0].text + ':'
+        weather_in_city = markup.find_all('div', {'class': 'main-title__title-wrap'})[0].text\
+                          + ':'
     except IndexError:
         return 'Неправильный параметр команды'
 
     temperature = markup.find('span', {'class': 'temp__value'}).text + '°'
 
     weather_condition = markup.find('div', {'class': 'link__condition'}).text
-    feels_like = markup.find('dt', {'class': 'term__label'}).text + ' ' +\
-        markup.find_all('span', {'class': 'temp__value'})[1].text + '°'
+
+    feels_like = markup.find('dt', {'class': 'term__label'}).text
+    feels_like_temperature = markup.find_all('span', {'class': 'temp__value'})[1].text + '°'
+    sense = feels_like + ' ' + feels_like_temperature
 
     humidity = 'Влажность: ' + markup.find_all('dd', {'class': 'term__value'})[3].text
+
     pressure = 'Давление: ' + markup.find_all('dd', {'class': 'term__value'})[-2].text
 
     try:
@@ -34,4 +46,4 @@ def get_weather(city):
     wind = wind_direction[:7] + wind_condition
 
     return '\n'.join((weather_in_city, weather_condition, temperature,
-                      feels_like, humidity, pressure, wind))
+                      sense, humidity, pressure, wind))
