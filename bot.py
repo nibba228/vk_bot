@@ -1,5 +1,4 @@
 import vk_api
-import sys
 
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
@@ -10,7 +9,7 @@ from memes import get_meme
 from weather import get_weather
 from exchange_rates import get_exchange_rate, get_char_codes
 from downloading import download_audio
-from voice_message import voice
+from films import get_genre_names, get_film
 
 
 # TODO: попробовать узнать погоду с помощью кнопки геолокации
@@ -33,7 +32,7 @@ def main():
     /m - мем
 
     /w - получить сведения о погоде в Москве
-
+    (Команды с /w пока могут не работать)
     /w <город> - погода на сегодня. Это может занять некоторое время.
 
     /exr - получить курсы основных валют
@@ -45,7 +44,8 @@ def main():
 
     /a - скачать прикреленные к команде аудиозаписи, это может занять некоторое время.
     
-    /v <текст> - озвучивание текста  
+    /f <жанр> - случайный фильм с таким жанром
+    /f жанры - показывает все доступные жанры
     '''
 
     for event in longpoll.listen():
@@ -81,8 +81,10 @@ def main():
             elif msg == '/a':
                 vk.messages.send(message=download_audio(vk, user_id),
                                  **kwargs)
-            elif '/v' in msg and len(msg) > 3:
-                voice(msg[2:].strip())
+            elif msg == '/f жанры':
+                vk.messages.send(message=get_genre_names(), **kwargs)
+            elif '/f' in msg:
+                vk.messages.send(message=get_film(msg[2:].strip()), **kwargs)
             else:
                 vk.messages.send(message='''Я не понимаю то, что вы написали.
                                  Отправьте /help, чтобы увидеть сводку по командам''',
