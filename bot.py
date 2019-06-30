@@ -18,7 +18,7 @@ from films import get_genre_names, get_film
 
 
 def main():
-    token = 'b1d0871366298b0af1290675423f38c05d57c63296eb409ce866b646fbbdda6ce506c14d2ad959baa312c'
+    token = 'token'
     vk_session = vk_api.VkApi(token=token)
     vk = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
