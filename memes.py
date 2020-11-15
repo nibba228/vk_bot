@@ -3,7 +3,7 @@ import random
 
 
 def get_meme(group_id):
-    token = '2a94d2a62a94d2a62a94d2a6022afffb4822a942a94d2a67792bba51eb064fbd042261e'
+    token = '<your_token>'
     vk_session = vk_api.VkApi(token=token)
     vk = vk_session.get_api()
 
