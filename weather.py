@@ -4,7 +4,7 @@ from yandex.Translater import Translater
 
 
 def get_weather(city):
-    token = 'trnsl.1.1.20190620T162425Z.570120d7187b4d5b.1a146fe2be7e8b171d1cca71f41ff5ba169c8ac3'
+    token = '<your_token>'
 
     if city != '':
         translator = Translater(token, city, 'ru', 'en')
